@@ -1,0 +1,306 @@
+// <!DOCTYPE html>
+// <html>
+
+// <head>
+// 	<title>Device Timer</title>
+// 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+// 	<script>
+
+// 		$(document).ready(function() {
+//       			loadDevices();
+//       			$("#deviceSelect").change(function() {
+//       				loadTimers();
+//       			});
+//       			$("#days").change(function() {
+//       				loadTimers();
+//       			});
+//       			$("#timers").on("click", ".dayButton", function() {
+//       				$(this).toggleClass("active");
+//       				saveTimer($(this).parent().parent().data("id"));
+//       			});
+//       			$("#addTimerButton").click(function() {
+//       				addTimer();
+//       			});
+//       			$("#timers").on("click", ".deleteTimerButton", function() {
+//       				deleteTimer($(this).data("id"));
+//       			});
+//       		});
+
+// 		$(document).ready(function () {
+// 			// Load the timers
+// 			loadTimers();
+
+// 			// Add a new timer
+// 			$("#addTimerForm").submit(function (event) {
+// 				event.preventDefault();
+// 				addTimer();
+// 			});
+
+// 			// Delete a timer
+// 			$(document).on("click", ".deleteTimerButton", function () {
+// 				var timerId = $(this).data("id");
+// 				deleteTimer(timerId);
+// 			});
+
+// 			// Toggle a day on/off
+// 			$(document).on("click", ".dayButton", function () {
+// 				var day = $(this).data("day");
+// 				var days = JSON.parse($("#days").val());
+// 				if ($(this).hasClass("active")) {
+// 					$(this).removeClass("active");
+// 					var index = days.indexOf(day);
+// 					if (index > -1) {
+// 						days.splice(index, 1);
+// 					}
+// 				} else {
+// 					$(this).addClass("active");
+// 					days.push(day);
+// 				}
+// 				$("#days").val(JSON.stringify(days));
+// 			});
+// 		});
+
+// 		// Load the timers from the JSON file
+// 		function loadTimers() {
+// 			$.getJSON("timers.json", function (data) {
+// 				// Clear the existing timers
+// 				$("#timers").empty();
+
+// 				// Loop through the timers
+// 				$.each(data, function (i, timer) {
+// 					// Create the timer element
+// 					var timerElement = $("<div>", { "class": "timer" });
+
+// 					// Add the timer name
+// 					var timerName = $("<div>", { "class": "timerName" });
+// 					timerName.text(timer.name);
+// 					timerElement.append(timerName);
+
+// 					// Add the timer time
+// 					var timerTime = $("<div>", { "class": "timerTime" });
+// 					timerTime.text(timer.time);
+// 					timerElement.append(timerTime);
+
+// 					// Add the timer days
+// 					var timerDays = $("<div>", { "class": "timerDays" });
+// 					var days = JSON.parse($("#days").val());
+// 					$.each(days, function (j, day) {
+// 						var dayButton = $("<button>", { "class": "dayButton" });
+// 						dayButton.text(day);
+// 						if (timer.days.includes(day)) {
+// 							dayButton.addClass("active");
+// 						}
+// 						dayButton.data("day", day);
+// 						timerDays.append(dayButton);
+// 					});
+// 					timerElement.append(timerDays);
+
+// 					// Add the timer command
+// 					var timerCommand = $("<div>", { "class": "timerCommand" });
+// 					timerCommand.text(timer.command);
+// 					timerElement.append(timerCommand);
+
+// 					// Add the delete button
+// 					var deleteButton = $("<button>", { "class": "deleteTimerButton" });
+// 					deleteButton.text("Delete");
+// 					deleteButton.data("id", timer.id);
+// 					timerElement.append(deleteButton);
+
+// 					// Add the timer element to the page
+// 					$("#timers").append(timerElement);
+// 				});
+// 			});
+// 		}
+
+// 				// Load the devices from the JSON file
+// 		function loadDevices() {
+// 		// Load the devices
+// 		$.getJSON("devices.json", function(data) {
+// 			// Loop through the devices
+// 			$.each(data, function(i, device) {
+// 			// Create the device option
+// 			var deviceOption = $("<option>");
+// 			deviceOption.text(device.name);
+// 			deviceOption.val(device.filename);
+
+// 			// Add the device option to the select element
+// 			$("#deviceSelect").append(deviceOption);
+// 			});
+
+// 			// Load the timers for the first device
+// 			loadTimers();
+// 		});
+// 		}
+
+// 		// Load the timers from the JSON file
+// 		function loadTimers() {
+// 		// Get the selected Tasmota device
+// 		var selectedDevice = $("#deviceSelect").val();
+
+// 		// Load the timers for the selected device
+// 		$.getJSON(selectedDevice + ".json", function(data) {
+// 			// Clear the existing timers
+// 			$("#timers").empty();
+
+// 			// Loop through the timers
+// 			$.each(data, function(i, timer) {
+// 			// Replace the device name with the selected device
+// 			timer.name = timer.name.replace("Name", selectedDevice);
+
+// 			// Create the timer element
+// 			var timerElement = $("<div>", { "class": "timer" });
+
+// 			// Add the timer name
+// 			var timerName = $("<div>", { "class": "timerName" });
+// 			timerName.text(timer.name);
+// 			timerElement.append(timerName);
+
+// 			// Add the timer time
+// 			var timerTime = $("<div>", { "class": "timerTime" });
+// 			timerTime.text(timer.time);
+// 			timerElement.append(timerTime);
+
+// 			// Add the timer days
+// 			var timerDays = $("<div>", { "class": "timerDays" });
+// 			var days = JSON.parse($("#days").val());
+// 			$.each(days, function(j, day) {
+// 				var dayButton = $("<button>", { "class": "dayButton" });
+// 				dayButton.text(day);
+// 				if (timer.days.includes(day)) {
+// 				dayButton.addClass("active");
+// 				}
+// 				dayButton.data("day", day);
+// 				timerDays.append(dayButton);
+// 			});
+// 			timerElement.append(timerDays);
+
+// 			// Add the timer command
+// 			var timerCommand = $("<div>", { "class": "timerCommand" });
+// 			timerCommand.text(timer.command);
+// 			timerElement.append(timerCommand);
+
+// 			// Add the delete button
+// 			var deleteButton = $("<button>", { "class": "deleteTimerButton" });
+// 			deleteButton.text("Delete");
+// 			deleteButton.data("id", timer.id);
+// 			timerElement.append(deleteButton);
+
+// 			// Add the timer element to the page
+// 			$("#timers").append(timerElement);
+// 			});
+// 		});
+// 		}
+
+// 				// Initialize the page
+// 		$(function() {
+// 		// Load the devices
+// 		loadDevices();
+
+// 		// Handle device selection changes
+// 		$("#deviceSelect").on("change", function() {
+// 			loadTimers();
+// 		});
+
+// 		// Handle day button clicks
+// 		$(document).on("click", ".dayButton", function() {
+// 			$(this).toggleClass("active");
+// 		});
+
+// 		// Handle delete timer button clicks
+// 		$(document).on("click", ".deleteTimerButton", function() {
+// 			var timerId = $(this).data("id");
+// 			$(this).closest(".timer").remove();
+// 		});
+// 		});
+
+// 		// Add a new timer to the JSON file
+// 		function addTimer() {
+// 			var name = $("#timerName").val();
+// 			var time = $("#timerTime").val();
+// 			var days = JSON.parse($("#days").val());
+// 			var command = $("#timerCommand").val();
+
+// 			$.post("add_timer.php", {
+// 				name: name,
+// 				time: time,
+// 				days: days,
+// 				command: command
+// 			}, function () {
+// 				// Clear the form and reload the timers
+// 				$("#addTimerForm")[0].reset();
+// 				loadTimers();
+// 			});
+// 		}
+// 		// Delete a timer from the JSON file
+// 		function deleteTimer(timerId) {
+// 			$.post("delete_timer.php", { id: timerId }, function () {
+// 				// Reload the timers
+// 				loadTimers();
+// 			});
+// 		}
+
+// 		// Get the current day (e.g. "Monday", "Tuesday", etc.)
+// 		function getCurrentDay() {
+// 			var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// 			return days[new Date().getDay()];
+// 		}
+
+// 		// Get the current time (e.g. "12:30")
+// 		function getCurrentTime() {
+// 			var date = new Date();
+// 			var hours = date.getHours().toString().padStart(2, "0");
+// 			var minutes = date.getMinutes().toString().padStart(2, "0");
+// 			return hours + ":" + minutes;
+// 		}
+
+// 		// Check if a timer should run based on the current time and day
+// 		function checkTimer(timer) {
+// 			// Check if the timer is enabled and the current day is one of the active days
+// 			if (timer.enabled && JSON.parse($("#days").val()).includes(getCurrentDay())) {
+// 				// Check if the current time matches the timer time
+// 				if (getCurrentTime() === timer.time) {
+// 					// Execute the command
+// 					executeCommand(timer.command);
+// 				}
+// 			}
+// 		}
+
+// 		// Execute a command by sending an HTTP request to the Tasmota device
+// 		function executeCommand(command) {
+// 			$.get("http://192.168.1.100/cm?cmnd=" + encodeURIComponent(command));
+// 		}
+// 	</script>
+// </head>
+
+// <body>
+// 	<h1>Device Timer</h1>
+
+// 	<div id="timers"></div>
+
+// 	<h2>Set Timer</h2>
+
+// 	<form id="addTimerForm">
+// 		<label for="deviceSelect">Device:</label>
+// 		<select id="deviceSelect"></select>
+
+// 		<label for="timerTime">Time:</label>
+// 		<input type="time" id="timerTime" name="time" required>
+
+// 		<label>Days:</label>
+// 		<button type="button" class="dayButton" data-day="Sunday">Sun</button>
+// 		<button type="button" class="dayButton" data-day="Monday">Mon</button>
+// 		<button type="button" class="dayButton" data-day="Tuesday">Tue</button>
+// 		<button type="button" class="dayButton" data-day="Wednesday">Wed</button>
+// 		<button type="button" class="dayButton" data-day="Thursday">Thu</button>
+// 		<button type="button" class="dayButton" data-day="Friday">Fri</button>
+// 		<button type="button" class="dayButton" data-day="Saturday">Sat</button>
+// 		<input type="hidden" id="days" name="days" value="[]">
+
+// 		<label for="timerCommand">Command:</label>
+// 		<input type="text" id="timerCommand" name="command" required>
+
+// 		<button type="submit">Add Timer</button>
+// 	</form>
+// </body>
+
+// </html>
